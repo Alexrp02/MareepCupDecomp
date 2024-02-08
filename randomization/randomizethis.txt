@@ -1,0 +1,12 @@
+- Objetos suelo (item_ball_scripts.inc)
+- Objetos tienda (Mart_Pokermart en scripts.inc)
+	- Item pool (items.h)
+- Encounters (wild_encounters.json) DONE
+- Trainers (trainer_parties.h)
+	- Poke pool (genx.h) DONE
+	- Inicial del rival persistente
+- Movimientos/habilidad/TM's pokes (src/data/pokemon/level_up_learnsets.h) / (src/data/pokemon/species_info/*) (src/data/pokemon/teachable_learnsets.h)
+	- Pool de movimientos
+	- Pool de habilidades
+	- Pool de TM
+- Starter (starter_choose.c)
