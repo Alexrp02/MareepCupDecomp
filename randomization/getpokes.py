@@ -1,5 +1,7 @@
 # This script extracts all SPECIES_... from a Pokemon .h file
 
+# Comentario de prueba
+
 # Open the files from 1 to 9 and extract the species names
 lines = []
 for i in range(1, 10):
