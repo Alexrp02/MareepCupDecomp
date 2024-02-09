@@ -4,6 +4,7 @@ use byteorder::{ByteOrder, LittleEndian};
 // OFFSETS
 const SECTION_ID_OFFSET:u16 = 0x0FF4;
 const TEAM_SIZE_OFFSET:u16 = 0x0234;
+const POKEMON_TEAM_OFFSET:u16 = 0x0238;
 
 // SIZES
 const SECTION_SIZE:u16 = 0x1000;
@@ -51,4 +52,9 @@ pub fn get_team_size (section_offset :u16, file :&mut File) -> u32 {
     let team_size = LittleEndian::read_u32(&buffer);
 
     return team_size;
+}
+
+pub fn get_pokemon_offset (section_offset :u16, pokemon_index: u16) -> u16 {
+    let pokemon_offset = section_offset + POKEMON_TEAM_OFFSET + (pokemon_index * 100) as u16;
+    return pokemon_offset;
 }

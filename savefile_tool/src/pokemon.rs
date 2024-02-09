@@ -2,8 +2,8 @@ use std::{fs::File, io::{Read, Seek, SeekFrom}};
 
 use byteorder::{ByteOrder, LittleEndian};
 
-// OFFSETS
-const TEAM_POKEMON_OFFSET:u16 = 0x0238;
+// OFFSETS;
+const OT_ID_OFFSET:u16 = 0x04;
 
 pub struct Pokemon {
     personality: u32,
@@ -21,13 +21,14 @@ pub trait Getters {
 
 trait Readers {
     fn read_personality(pokemon_offset :u16, file :&mut File) -> u32;
+    fn read_ot_id(pokemon_offset :u16, file :&mut File) -> u32;
 }
 
 impl Pokemon {
     pub fn new(pokemon_offset :u16, file :&mut File) -> Self {
         Pokemon {
             personality: Self::read_personality(pokemon_offset, file),
-            ot_id: 0,
+            ot_id: Self::read_ot_id(pokemon_offset, file),
             level: 50,
             data: [0; 48],
         }
@@ -51,15 +52,22 @@ impl Getters for Pokemon {
 
 impl Readers for Pokemon {
     fn read_personality(pokemon_offset :u16, file :&mut File) -> u32 {
-        // Seek to the first section id
-        file.seek(SeekFrom::Start((pokemon_offset + TEAM_POKEMON_OFFSET) as u64)).expect("Error seeking to pokemon offset");
+        file.seek(SeekFrom::Start(pokemon_offset as u64)).expect("Error seeking to pokemon offset");
     
-        // Read a specific number of bytes
         let mut buffer = vec![0; 4];
         file.read_exact(&mut buffer).expect("Buffer overflow when reading pokemon personality");
     
-        // Read bytes and interpret values based on format
         let personality = LittleEndian::read_u32(&buffer);
         return personality;
+    }
+
+    fn read_ot_id(pokemon_offset :u16, file :&mut File) -> u32 {
+        file.seek(SeekFrom::Start((pokemon_offset + OT_ID_OFFSET) as u64)).expect("Error seeking to pokemon offset");
+    
+        let mut buffer = vec![0; 4];
+        file.read_exact(&mut buffer).expect("Buffer overflow when reading pokemon ot id");
+    
+        let ot_id = LittleEndian::read_u32(&buffer);
+        return ot_id;
     }
 }

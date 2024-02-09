@@ -4,6 +4,8 @@ pub mod pokemon;
 use std::fs::File;
 use crate::pokemon::Getters;
 
+const POKEMON_DATA_INDEX :u16 = 1;
+
 fn main() {
     // Open the savefile
     let mut file :File = match File::open("pokeemerald.sav") {
@@ -15,14 +17,20 @@ fn main() {
     };
 
     // Search for the section offset of the section number 1 (Pokemon team data)
-    let section_offset = utils::get_section_id(&mut file, 1);
+    let section_offset = utils::get_section_id(&mut file, POKEMON_DATA_INDEX);
     println!("Pokemon section offset: 0x{:X}", section_offset);
+
+    // Get the first pokemon offset
+    let pokemon_offset = utils::get_pokemon_offset(section_offset, 0);
 
     // Get the team size
     let team_size = utils::get_team_size(section_offset, &mut file);
     println!("Team size: {}", team_size);
 
     // Create a new Pokemon object
-    let pokemon = pokemon::Pokemon::new(section_offset, &mut file);
+    let pokemon = pokemon::Pokemon::new(pokemon_offset, &mut file);
     println!("First pokemon personality: 0x{:X}", pokemon.get_personality());
+
+    // Print the ot id
+    println!("First pokemon ot id: 0x{:X}", pokemon.get_ot_id());
 }
