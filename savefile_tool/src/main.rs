@@ -34,4 +34,7 @@ fn main() {
 
     // Print the ot id
     println!("First pokemon ot id: {}", pokemon.get_ot_id());
+
+    // Print the decryption key
+    println!("First pokemon decryption key: 0x{:X}", pokemon.get_decryption_key());
 }

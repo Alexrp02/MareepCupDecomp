@@ -18,6 +18,7 @@ pub trait Getters {
     fn get_ot_id(&self) -> u32;
     fn get_level(&self) -> u8 ;
     fn get_data(&self) -> [u8; 48] ;
+    fn get_decryption_key(&self) -> u32;
 }
 
 trait Readers {
@@ -26,14 +27,14 @@ trait Readers {
 }
 
 trait Decryption{
-    fn get_decryption_key(personality:u32, ot_id:u32) -> u32;
+    fn calculate_decryption_key(personality:u32, ot_id:u32) -> u32;
 }
 
 impl Pokemon {
     pub fn new(pokemon_offset :u16, file :&mut File) -> Self {
         let personality = Self::read_personality(pokemon_offset, file);
         let ot_id = Self::read_ot_id(pokemon_offset, file);
-        let decryption_key = Self::get_decryption_key(personality, ot_id);
+        let decryption_key = Self::calculate_decryption_key(personality, ot_id);
         Pokemon {
             personality,
             ot_id,
@@ -56,6 +57,10 @@ impl Getters for Pokemon {
     }
     fn get_data(&self) -> [u8; 48] {
         self.data
+    }
+
+    fn get_decryption_key(&self) -> u32 {
+        self.decryption_key
     }
 }
 
@@ -82,7 +87,7 @@ impl Readers for Pokemon {
 }
 
 impl Decryption for Pokemon {
-    fn get_decryption_key(personality:u32, ot_id:u32) -> u32 {
+    fn calculate_decryption_key(personality:u32, ot_id:u32) -> u32 {
         let key = personality ^ ot_id;
         return key;
     }
