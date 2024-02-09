@@ -22,6 +22,7 @@ fn main() {
 
     // Get the first pokemon offset
     let pokemon_offset = utils::get_pokemon_offset(section_offset, 0);
+    println!("First pokemon offset: 0x{:X}", pokemon_offset);
 
     // Get the team size
     let team_size = utils::get_team_size(section_offset, &mut file);
@@ -32,5 +33,5 @@ fn main() {
     println!("First pokemon personality: 0x{:X}", pokemon.get_personality());
 
     // Print the ot id
-    println!("First pokemon ot id: 0x{:X}", pokemon.get_ot_id());
+    println!("First pokemon ot id: {}", pokemon.get_ot_id());
 }

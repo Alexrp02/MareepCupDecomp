@@ -10,6 +10,7 @@ pub struct Pokemon {
     ot_id: u32,
     level :u8,
     data: [u8; 48],
+    decryption_key: u32,
 }
 
 pub trait Getters {
@@ -24,13 +25,21 @@ trait Readers {
     fn read_ot_id(pokemon_offset :u16, file :&mut File) -> u32;
 }
 
+trait Decryption{
+    fn get_decryption_key(personality:u32, ot_id:u32) -> u32;
+}
+
 impl Pokemon {
     pub fn new(pokemon_offset :u16, file :&mut File) -> Self {
+        let personality = Self::read_personality(pokemon_offset, file);
+        let ot_id = Self::read_ot_id(pokemon_offset, file);
+        let decryption_key = Self::get_decryption_key(personality, ot_id);
         Pokemon {
-            personality: Self::read_personality(pokemon_offset, file),
-            ot_id: Self::read_ot_id(pokemon_offset, file),
+            personality,
+            ot_id,
             level: 50,
             data: [0; 48],
+            decryption_key,
         }
     }
 }
@@ -69,5 +78,12 @@ impl Readers for Pokemon {
     
         let ot_id = LittleEndian::read_u32(&buffer);
         return ot_id;
+    }
+}
+
+impl Decryption for Pokemon {
+    fn get_decryption_key(personality:u32, ot_id:u32) -> u32 {
+        let key = personality ^ ot_id;
+        return key;
     }
 }
