@@ -5,6 +5,7 @@ use byteorder::{ByteOrder, LittleEndian};
 // OFFSETS;
 const OT_ID_OFFSET:u16 = 0x04;
 const DATA_OFFSET:u16 = 0x20;
+const SPECIE_OFFSET:u16 = 0x0;
 
 // SIZES
 const DATA_SIZE:u8 = 48;
@@ -28,6 +29,7 @@ pub trait Getters {
 trait Readers {
     fn read_personality(pokemon_offset :u16, file :&mut File) -> u32;
     fn read_ot_id(pokemon_offset :u16, file :&mut File) -> u32;
+    fn read_species(data: &Vec<u8>) -> u16;
 }
 
 trait Decryption{
@@ -43,6 +45,7 @@ impl Pokemon {
         let decryption_key = Self::calculate_decryption_key(personality, ot_id);
         let encrypted_data : [u8; DATA_SIZE as usize] = Self::get_encrypted_data(file, pokemon_offset);
         let data = Self::decrypt_data(&encrypted_data, decryption_key);
+        Self::read_species(&data) ;
         Pokemon {
             personality,
             ot_id,
@@ -91,6 +94,12 @@ impl Readers for Pokemon {
     
         let ot_id = LittleEndian::read_u32(&buffer);
         return ot_id;
+    }
+
+    fn read_species(data: &Vec<u8>) -> u16 {
+        let species = LittleEndian::read_u16(&data[(SPECIE_OFFSET + 36) as usize..(SPECIE_OFFSET + 36) as usize + 2]) ;
+        println!("Species: {}", species);
+        return species;
     }
 }
 
