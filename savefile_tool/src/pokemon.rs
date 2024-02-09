@@ -19,11 +19,14 @@ pub trait Getters {
     fn get_data(&self) -> [u8; 48] ;
 }
 
+trait Readers {
+    fn read_personality(pokemon_offset :u16, file :&mut File) -> u32;
+}
+
 impl Pokemon {
     pub fn new(pokemon_offset :u16, file :&mut File) -> Self {
-        read_personality(pokemon_offset, file);
         Pokemon {
-            personality: 0,
+            personality: Self::read_personality(pokemon_offset, file),
             ot_id: 0,
             level: 50,
             data: [0; 48],
@@ -46,15 +49,17 @@ impl Getters for Pokemon {
     }
 }
 
-fn read_personality(pokemon_offset :u16, file :&mut File) -> u32 {
-    // Seek to the first section id
-    file.seek(SeekFrom::Start((pokemon_offset + TEAM_POKEMON_OFFSET) as u64)).expect("Error seeking to pokemon offset");
-
-    // Read a specific number of bytes
-    let mut buffer = vec![0; 4];
-    file.read_exact(&mut buffer).expect("Buffer overflow when reading pokemon personality");
-
-    // Read bytes and interpret values based on format
-    let personality = LittleEndian::read_u32(&buffer);
-    return personality;
+impl Readers for Pokemon {
+    fn read_personality(pokemon_offset :u16, file :&mut File) -> u32 {
+        // Seek to the first section id
+        file.seek(SeekFrom::Start((pokemon_offset + TEAM_POKEMON_OFFSET) as u64)).expect("Error seeking to pokemon offset");
+    
+        // Read a specific number of bytes
+        let mut buffer = vec![0; 4];
+        file.read_exact(&mut buffer).expect("Buffer overflow when reading pokemon personality");
+    
+        // Read bytes and interpret values based on format
+        let personality = LittleEndian::read_u32(&buffer);
+        return personality;
+    }
 }
