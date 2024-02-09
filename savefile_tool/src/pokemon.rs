@@ -1,4 +1,4 @@
-use std::{fs::File, io::{Read, Seek, SeekFrom}};
+use std::{fs::File, io::{Read, Seek, SeekFrom}, vec};
 
 use byteorder::{ByteOrder, LittleEndian};
 
@@ -13,7 +13,7 @@ pub struct Pokemon {
     personality: u32,
     ot_id: u32,
     level :u8,
-    data: [u8; DATA_SIZE as usize],
+    data: Vec<u8>,
     decryption_key: u32,
 }
 
@@ -21,7 +21,7 @@ pub trait Getters {
     fn get_personality(&self) -> u32;
     fn get_ot_id(&self) -> u32;
     fn get_level(&self) -> u8 ;
-    fn get_data(&self) -> [u8; 48] ;
+    fn get_data(&self) -> &Vec<u8> ;
     fn get_decryption_key(&self) -> u32;
 }
 
@@ -42,11 +42,12 @@ impl Pokemon {
         let ot_id = Self::read_ot_id(pokemon_offset, file);
         let decryption_key = Self::calculate_decryption_key(personality, ot_id);
         let encrypted_data : [u8; DATA_SIZE as usize] = Self::get_encrypted_data(file, pokemon_offset);
+        let data = Self::decrypt_data(&encrypted_data, decryption_key);
         Pokemon {
             personality,
             ot_id,
             level: 50,
-            data: [0; 48],
+            data,
             decryption_key,
         }
     }
@@ -62,8 +63,8 @@ impl Getters for Pokemon {
     fn get_level(&self) -> u8 {
         self.level
     }
-    fn get_data(&self) -> [u8; 48] {
-        self.data
+    fn get_data(&self) -> &Vec<u8> {
+        &self.data
     }
 
     fn get_decryption_key(&self) -> u32 {

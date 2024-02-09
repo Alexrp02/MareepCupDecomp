@@ -31,10 +31,14 @@ fn main() {
     // Create a new Pokemon object
     let pokemon = pokemon::Pokemon::new(pokemon_offset, &mut file);
     println!("First pokemon personality: 0x{:X}", pokemon.get_personality());
+    println!("The personality mod 24 is {}", pokemon.get_personality() % 24);
 
     // Print the ot id
     println!("First pokemon ot id: {}", pokemon.get_ot_id());
 
     // Print the decryption key
     println!("First pokemon decryption key: 0x{:X}", pokemon.get_decryption_key());
+
+    // Print decrypted data
+    println!("First pokemon data: {:x?}", pokemon.get_data());
 }
