@@ -1,6 +1,0 @@
-// OFFSETS
-pub const SECTION_ID_OFFSET:u16 = 0x0FF4;
-
-// SIZES
-pub const SECTION_SIZE:u16 = 0x1000;
-pub const SECTION_ID_SIZE:u8 = 0x2;

@@ -1,9 +1,6 @@
-pub mod constants;
 pub mod utils;
 
 use std::fs::File;
-
-use crate::constants::*;
 
 fn main() {
     // Open the savefile

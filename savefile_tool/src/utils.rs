@@ -1,7 +1,12 @@
 use std::{fs::File, io::{Read, Seek, SeekFrom}};
 use byteorder::{ByteOrder, LittleEndian};
 
-use crate::{SECTION_ID_OFFSET, SECTION_ID_SIZE, SECTION_SIZE};
+// OFFSETS
+const SECTION_ID_OFFSET:u16 = 0x0FF4;
+
+// SIZES
+const SECTION_SIZE:u16 = 0x1000;
+const SECTION_ID_SIZE:u8 = 0x2;
 
 
 pub fn get_section_id (file :&mut File, section_id: u16) -> u16 {
