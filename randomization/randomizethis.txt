@@ -6,7 +6,7 @@
 	- Poke pool (genx.h) DONE
 	- Inicial del rival persistente
 - Movimientos/habilidad/TM's pokes (src/data/pokemon/level_up_learnsets.h) / (src/data/pokemon/species_info/*) (src/data/pokemon/teachable_learnsets.h)
-	- Pool de movimientos
-	- Pool de habilidades
-	- Pool de TM
+	- Pool de movimientos (moves.h/move_names.h)
+	- Pool de habilidades (abilities.h(constants)(text))
+	- Pool de TM (teachable_learnsets.h) 
 - Starter (starter_choose.c)

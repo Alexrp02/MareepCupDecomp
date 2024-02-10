@@ -6,30 +6,42 @@ use byteorder::{ByteOrder, LittleEndian};
 const OT_ID_OFFSET:u16 = 0x04;
 const DATA_OFFSET:u16 = 0x20;
 const SPECIE_OFFSET:u16 = 0x0;
+const ITEM_HELD_OFFSET:u16 = 0x02;
 
 // SIZES
 const DATA_SIZE:u8 = 48;
+const SUBDATA_SIZE:u16 = 12;
+
+const FORMATS: [&str; 24] = ["GAEM", "GAME", "GEAM", "GEMA", "GMAE", "GMEA", "AGEM", "AGME", "AEGM", "AEMG", "AMGE", "AMEG", "EGAM", "EGMA", "EAGM", "EAMG", "EMGA", "EMAG", "MGAE", "MGEA", "MAGE", "MAEG", "MEGA", "MEAG"] ;
 
 pub struct Pokemon {
     personality: u32,
+    specie: u16,
+    item_held: u16,
+    moves: Vec<u16>,
+    evs: Vec<u8>,
     ot_id: u32,
     level :u8,
     data: Vec<u8>,
     decryption_key: u32,
+    format: u16,
 }
 
 pub trait Getters {
     fn get_personality(&self) -> u32;
+    fn get_specie(&self) -> u16;
     fn get_ot_id(&self) -> u32;
     fn get_level(&self) -> u8 ;
     fn get_data(&self) -> &Vec<u8> ;
     fn get_decryption_key(&self) -> u32;
 }
 
-trait Readers {
+pub trait Readers {
     fn read_personality(pokemon_offset :u16, file :&mut File) -> u32;
     fn read_ot_id(pokemon_offset :u16, file :&mut File) -> u32;
     fn read_species(data: &Vec<u8>) -> u16;
+    fn calculate_format(personality:u32) -> u16;
+    fn read_all_data(&mut self) ;
 }
 
 trait Decryption{
@@ -45,13 +57,18 @@ impl Pokemon {
         let decryption_key = Self::calculate_decryption_key(personality, ot_id);
         let encrypted_data : [u8; DATA_SIZE as usize] = Self::get_encrypted_data(file, pokemon_offset);
         let data = Self::decrypt_data(&encrypted_data, decryption_key);
-        Self::read_species(&data) ;
+        let format = Self::calculate_format(personality);
         Pokemon {
             personality,
+            specie: 0,
+            item_held: 0,
+            moves: vec![],
+            evs: vec![0,0,0,0,0,0],
             ot_id,
             level: 50,
             data,
             decryption_key,
+            format
         }
     }
 }
@@ -72,6 +89,10 @@ impl Getters for Pokemon {
 
     fn get_decryption_key(&self) -> u32 {
         self.decryption_key
+    }
+
+    fn get_specie(&self) -> u16 {
+        self.specie
     }
 }
 
@@ -97,9 +118,47 @@ impl Readers for Pokemon {
     }
 
     fn read_species(data: &Vec<u8>) -> u16 {
-        let species = LittleEndian::read_u16(&data[(SPECIE_OFFSET + 36) as usize..(SPECIE_OFFSET + 36) as usize + 2]) ;
+        let species = LittleEndian::read_u16(&data[(SPECIE_OFFSET) as usize..(SPECIE_OFFSET) as usize + 2]) ;
         println!("Species: {}", species);
         return species;
+    }
+
+    fn calculate_format(personality:u32) -> u16 {
+        let format = personality % 24;
+        return format as u16;
+    }
+
+    fn read_all_data(&mut self)  {
+        let structure = FORMATS[self.format as usize] ;
+        for n in 0..4 {
+            match structure.chars().nth(n).expect("Error getting the char") {
+                'G' => {
+                    println!("G");
+                    self.specie = LittleEndian::read_u16(&self.data[(SPECIE_OFFSET + SUBDATA_SIZE*(n as u16)) as usize..(SPECIE_OFFSET + SUBDATA_SIZE*(n as u16)) as usize + 2]) ;
+                    self.item_held = LittleEndian::read_u16(&self.data[(ITEM_HELD_OFFSET + SUBDATA_SIZE*(n as u16)) as usize..(ITEM_HELD_OFFSET + SUBDATA_SIZE*(n as u16)) as usize + 2]) ;
+                },
+                'A' => {
+                    println!("A");
+                    // Read the four moves
+                    for i in 0..4 {
+                        let move_id = LittleEndian::read_u16(&self.data[(SUBDATA_SIZE*(n as u16) + 2*i) as usize..(SUBDATA_SIZE*(n as u16) + 2*i) as usize + 2]) ;
+                        self.moves.push(move_id);
+                    }
+                    println!("{:?}", self.moves);
+                },
+                'E' => {
+                    println!("E");
+
+                },
+                'M' => {
+                    println!("M");
+                },
+                _ => {
+                    println!("Error");
+                }
+            
+            }
+        }
     }
 }
 
