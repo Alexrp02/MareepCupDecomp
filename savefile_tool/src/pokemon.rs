@@ -20,6 +20,9 @@ pub struct Pokemon {
     item_held: u16,
     moves: Vec<u16>,
     evs: Vec<u8>,
+    ivs: Vec<u8>,
+    nature: u8,
+    second_ability: bool,
     ot_id: u32,
     level :u8,
     data: Vec<u8>,
@@ -64,6 +67,9 @@ impl Pokemon {
             item_held: 0,
             moves: vec![],
             evs: vec![0,0,0,0,0,0],
+            ivs: vec![0,0,0,0,0,0],
+            nature: (personality % 25) as u8,
+            second_ability: (personality >> 31) == 1,
             ot_id,
             level: 50,
             data,
@@ -148,10 +154,23 @@ impl Readers for Pokemon {
                 },
                 'E' => {
                     println!("E");
-
+                    for i in 0..6 {
+                        let ev = self.data[(SUBDATA_SIZE*(n as u16) + i) as usize] ;
+                        self.evs[i as usize] = ev;
+                    }
+                    println!("EV's: {:?}", self.evs);
                 },
                 'M' => {
                     println!("M");
+                    let data_bytes = &self.data[(SUBDATA_SIZE*(n as u16)) as usize..(SUBDATA_SIZE*(n as u16)) as usize + SUBDATA_SIZE as usize] ;
+                    let data_int = LittleEndian::read_u32(data_bytes);
+                    // Mask lower 30 bits
+                    let masked_data = data_int & ((1 << 30) - 1);
+                    for i in 0..6 {
+                        let iv = (masked_data >> (5*i)) & 0b11111;
+                        self.ivs[i as usize] = iv as u8;
+                    }
+                    println!("IV's: {:?}", self.ivs);
                 },
                 _ => {
                     println!("Error");
