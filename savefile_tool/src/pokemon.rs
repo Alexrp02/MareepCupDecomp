@@ -37,6 +37,7 @@ pub trait Getters {
     fn get_level(&self) -> u8 ;
     fn get_data(&self) -> &Vec<u8> ;
     fn get_decryption_key(&self) -> u32;
+    fn get_as_showdown(&self) -> String;
 }
 
 pub trait Readers {
@@ -99,6 +100,22 @@ impl Getters for Pokemon {
 
     fn get_specie(&self) -> u16 {
         self.specie
+    }
+
+    fn get_as_showdown(&self) -> String {
+        let mut showdown = String::new();
+        showdown.push_str(&format!("{} @ {}", self.specie, self.item_held));
+        showdown.push_str("\n");
+        showdown.push_str("Level: 50");
+        showdown.push_str("\n");
+        showdown.push_str(&format!("Ability: {}", self.second_ability));
+        showdown.push_str("\n");
+        showdown.push_str(&format!("IVs: {}, {}, {}, {}, {}, {}", self.ivs[0], self.ivs[1], self.ivs[2], self.ivs[3], self.ivs[4], self.ivs[5]));
+        showdown.push_str("\n");
+        for i in 0..4 {
+            showdown.push_str(&format!("- {}\n", self.moves[i]));
+        }
+        showdown
     }
 }
 

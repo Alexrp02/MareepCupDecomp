@@ -4,6 +4,8 @@ with open('./raw_data/raw_moves.txt', 'r') as f:
 
 move_names = []
 for line in lines:
+    if len(move_names) == 848:
+        break
     if line.startswith("    [MOVE_"):
         move_names.append(line.strip().split('"')[1])
 

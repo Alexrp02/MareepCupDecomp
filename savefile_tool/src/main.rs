@@ -43,4 +43,7 @@ fn main() {
     // Print the specie
     println!("First pokemon specie: {}", pokemon.get_specie());
 
+    // Print showdown
+    println!("First pokemon as showdown:\n{}", pokemon.get_as_showdown());
+
 }
