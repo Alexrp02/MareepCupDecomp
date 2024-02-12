@@ -1,0 +1,36 @@
+Ogerpon Teal Mask 
+Level: 50
+Adamant Nature
+IVs: 0, 0, 4, 10, 24, 0
+- Vine Whip
+- Leech Seed
+- Quick Attack
+- Follow Me
+
+Toxtricity Amped Gigantamax 
+Level: 50
+Serious Nature
+IVs: 0, 0, 0, 10, 25, 0
+- Shock Wave
+- Scary Face
+- Taunt
+- Venoshock
+
+Poltchageist Counterfeit 
+Level: 50
+Adamant Nature
+IVs: 0, 0, 0, 10, 25, 0
+- Astonish
+- Absorb
+- Life Dew
+- Foul Play
+
+Kleavor 
+Level: 50
+Bold Nature
+IVs: 0, 0, 0, 10, 25, 0
+- False Swipe
+- Smack Down
+- Double Team
+- Double Hit
+

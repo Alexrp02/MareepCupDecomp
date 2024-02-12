@@ -1,5 +1,7 @@
 use std::{
-    ascii::AsciiExt, fs::File, io::{BufRead, BufReader, Read, Seek, SeekFrom}, vec
+    fs::File,
+    io::{BufRead, BufReader, Read, Seek, SeekFrom},
+    vec,
 };
 
 use byteorder::{ByteOrder, LittleEndian};
@@ -14,8 +16,10 @@ const ITEM_HELD_OFFSET: u16 = 0x02;
 const DATA_SIZE: u8 = 48;
 const SUBDATA_SIZE: u16 = 12;
 
-const NATURE_NAMES_FILE: &str = "text/nature_names.txt" ;
-const POKEMON_NAMES_FILE: &str = "text/species_names.txt" ;
+const NATURE_NAMES_FILE: &str = "text/nature_names.txt";
+const POKEMON_NAMES_FILE: &str = "text/species_names.txt";
+const MOVE_NAMES_FILE: &str = "text/move_names.txt";
+const ITEM_NAMES_FILE: &str = "text/item_names.txt";
 
 const FORMATS: [&str; 24] = [
     "GAEM", "GAME", "GEAM", "GEMA", "GMAE", "GMEA", "AGEM", "AGME", "AEGM", "AEMG", "AMGE", "AMEG",
@@ -46,7 +50,7 @@ pub trait Getters {
     fn get_data(&self) -> &Vec<u8>;
     fn get_decryption_key(&self) -> u32;
     fn get_as_showdown(&self) -> String;
-    fn get_correct_name(&self, pokemon_names: Vec<String>) -> String;
+    fn get_correct_word(&self, word: String) -> String;
 }
 
 pub trait Readers {
@@ -76,7 +80,6 @@ impl Pokemon {
             Self::get_encrypted_data(file, pokemon_offset);
         let data = Self::decrypt_data(&encrypted_data, decryption_key);
         let format = Self::calculate_format(personality);
-        println!("{:?}", get_natures("text/nature_names.txt"));
         Pokemon {
             personality,
             specie: 0,
@@ -117,29 +120,36 @@ impl Getters for Pokemon {
         self.specie
     }
 
-    fn get_correct_name(&self, pokemon_names: Vec<String>) -> String {
+    fn get_correct_word(&self, name: String) -> String {
         let mut correct_name = "".to_string();
-        let name = pokemon_names[self.specie as usize].clone();
-        let name_without_spaces = name.split("_") ;
+        let name_without_spaces = name.split("_");
         for word in name_without_spaces {
-            let correct_word = word.chars().enumerate().map(|(i, c)| if i == 0 { c.to_ascii_uppercase() } else { c.to_ascii_lowercase() }).collect::<String>(); 
-            correct_name.push_str(&correct_word) ;
+            let correct_word = get_str_as_first_capitalized(word);
+            correct_name.push_str(&correct_word);
             correct_name.push_str(" ");
         }
         correct_name
     }
 
     fn get_as_showdown(&self) -> String {
-        let nature_names = get_natures(NATURE_NAMES_FILE) ;
-        let pokemon_names = get_pokemon_names(POKEMON_NAMES_FILE) ;
-        let correct_name = self.get_correct_name(pokemon_names);
+        let nature_names = get_names(NATURE_NAMES_FILE);
+        let pokemon_names = get_names(POKEMON_NAMES_FILE);
+        let move_names = get_names(MOVE_NAMES_FILE);
+        let item_names = get_names(ITEM_NAMES_FILE);
+
+        let correct_name = self.get_correct_word(pokemon_names[self.specie as usize].clone());
+        let correct_item = self.get_correct_word(item_names[self.item_held as usize].clone());
 
         let mut showdown = String::new();
-        showdown.push_str(&format!("{} @ {}", correct_name, self.item_held));
+        if self.item_held != 0 {
+            showdown.push_str(&format!("{}@ {}", correct_name, correct_item))
+        } else {
+            showdown.push_str(&format!("{}", correct_name));
+        }
         showdown.push_str("\n");
         showdown.push_str("Level: 50");
-        showdown.push_str("\n");
-        showdown.push_str(&format!("Ability: {}", self.second_ability));
+        // showdown.push_str("\n");
+        // showdown.push_str(&format!("Ability: {}", self.second_ability));
         showdown.push_str("\n");
         showdown.push_str(&format!("{} Nature", nature_names[self.nature as usize]));
         showdown.push_str("\n");
@@ -149,8 +159,9 @@ impl Getters for Pokemon {
         ));
         showdown.push_str("\n");
         for i in 0..4 {
-            showdown.push_str(&format!("- {}\n", self.moves[i]));
+            showdown.push_str(&format!("- {}\n", move_names[self.moves[i] as usize]));
         }
+        showdown.push_str("\n");
         showdown
     }
 }
@@ -291,22 +302,27 @@ impl Decryption for Pokemon {
     }
 }
 
-fn get_natures(filename: &str) -> Vec<String> {
-    let file = File::open(filename).expect("Error opening the nature names file");
+fn get_names(filename: &str) -> Vec<String> {
+    let file = File::open(filename).expect(format!("Error opening file {}", filename).as_str());
     let reader = BufReader::new(file);
-    let mut nature_names: Vec<String> = vec![];
+    let mut names: Vec<String> = vec![];
     for line in reader.lines() {
-        nature_names.push(line.expect("Error getting a line in the nature names file"));
+        names.push(line.expect(format!("Error reading line from file {}", filename).as_str()));
     }
-    return nature_names;
+    names
 }
 
-fn get_pokemon_names(filename: &str) -> Vec<String> {
-    let file = File::open(filename).expect("Error opening the pokemon names file");
-    let reader = BufReader::new(file);
-    let mut pokemon_names: Vec<String> = vec![];
-    for line in reader.lines() {
-        pokemon_names.push(line.expect("Error getting a line in the pokemon names file"));
-    }
-    return pokemon_names;
+fn get_str_as_first_capitalized(word: &str) -> String {
+    let correct_word = word
+        .chars()
+        .enumerate()
+        .map(|(i, c)| {
+            if i == 0 {
+                c.to_ascii_uppercase()
+            } else {
+                c.to_ascii_lowercase()
+            }
+        })
+        .collect::<String>();
+    correct_word
 }
