@@ -5,7 +5,7 @@
 - Trainers (trainer_parties.h) DONE **trainer_teams_randomize.py**
   - Poke pool (genx.h) (1-1522 menos 1425-1488) DONE
   - Inicial del rival persistente
-- Movimientos/habilidad/TM's pokes (src/data/pokemon/level_up_learnsets.h) **level_up_learnsets_randomize.py** / (src/data/pokemon/species_info/*) (src/data/pokemon/teachable_learnsets.h)
+- Movimientos/habilidad/TM's pokes (src/data/pokemon/level_up_learnsets.h) **level_up_learnsets_randomize.py** DONE / (src/data/pokemon/species_info/*) **abilities_randomize.py** (src/data/pokemon/teachable_learnsets.h)
   - Pool de movimientos (moves.h/move_names.h) DONE
   - Pool de habilidades (abilities.h(constants)(text)) DONE (1-306)
   - Pool de TM (teachable_learnsets.h)

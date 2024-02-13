@@ -1,6 +1,6 @@
 import random
 
-with open("data/move_define.txt", "r") as f:
+with open("../data/move_define.txt", "r") as f:
     move_names = f.readlines()
 
 lines = []
