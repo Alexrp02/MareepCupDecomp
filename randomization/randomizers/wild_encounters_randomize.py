@@ -2,7 +2,7 @@ import json
 import random
 
 # Take species list from species_names.txt
-with open("species_names.txt", "r") as f:
+with open("../data/species_names.txt", "r") as f:
   species_pool = f.readlines()
   species_pool = [specie.strip() for specie in species_pool]
 
@@ -21,14 +21,14 @@ def modify_species(data):
       modify_species(item)
 
 # Load JSON data
-with open("./pokeemerald-expansion/src/data/wild_encounters.json", "r") as f:
+with open("../../src/data/wild_encounters.json", "r") as f:
   data = json.load(f)
 
 # Modify species
 modify_species(data)
 
 # Save modified data
-with open("./pokeemerald-expansion/src/data/wild_encounters.json", "w") as f:
+with open("../../src/data/wild_encounters.json", "w") as f:
   json.dump(data, f, indent=4)
 
 print("Successfully modified species in your JSON file!")

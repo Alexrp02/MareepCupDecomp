@@ -1,0 +1,1 @@
+grep -E ' [0-9]+' ./raw_data/raw_items.txt | grep '#define ITEM_' | cut -d' ' -f 2- | cut -d' ' -f 1 | sed 's/ITEM_//g' > data/item_names.txt

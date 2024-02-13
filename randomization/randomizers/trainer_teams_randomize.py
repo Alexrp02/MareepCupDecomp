@@ -1,11 +1,11 @@
 import random
 # Get the list of all the pokemon species from the file species_names.txt
-with open("species_names.txt", "r") as f:
+with open("../data/species_names.txt", "r") as f:
     species_names = f.readlines()
 
 lines = []
 
-with open("pokeemerald-expansion/src/data/trainer_parties.h", "r") as f:
+with open("../../src/data/trainer_parties.h", "r") as f:
         lines += f.readlines()
 
 modified_lines = []
@@ -19,5 +19,5 @@ for line in lines:
         modified_lines.append(line)
 
 # Write to a temp file
-with open("pokeemerald-expansion/src/data/trainer_parties.h", "w") as f:
+with open("../../src/data/trainer_parties.h", "w") as f:
     f.writelines(modified_lines)
