@@ -1,11 +1,11 @@
 import random
 
-with open("../data/move_define.txt", "r") as f:
+with open("data/move_define.txt", "r") as f:
     move_names = f.readlines()
 
 lines = []
 
-with open("../../src/data/pokemon/level_up_learnsets.h", "r") as f:
+with open("../src/data/pokemon/level_up_learnsets.h", "r") as f:
         lines += f.readlines()
 
 modified_lines = []
@@ -31,5 +31,5 @@ for line in lines:
         modified_lines.append(line)
 
 # Write to a temp file
-with open("../../src/data/pokemon/level_up_learnsets.h", "w") as f:
+with open("../src/data/pokemon/level_up_learnsets.h", "w") as f:
     f.writelines(modified_lines)
