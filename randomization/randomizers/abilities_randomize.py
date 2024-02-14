@@ -10,8 +10,14 @@ for i in range(1,10):
 
 # Iterate through each line
     new_lines = []
+    # Variable to check if geodude family
+    geodude = False
+
     for line in lines:
         # Check if the line starts with ".abilities = {"
+        if line.startswith("#define KANTONIAN_GEODUDE_FAMILY_INFO"):
+            geodude = True
+            print("KANTONIAN_GEODUDE_FAMILY_INFO")
         if line.startswith("        .abilities = {"):
             # Extract the current abilities list
             abilities_string = line.split("=")[1].strip().split("}")[0].strip()
@@ -21,7 +27,13 @@ for i in range(1,10):
             new_abilities_list = [ability.strip() for ability in new_abilities_list]
 
             # Update the line with the new abilities list
-            new_line = "        .abilities = {" + ', '.join(new_abilities_list) + "}\n"
+            new_line = "        .abilities = {" + ', '.join(new_abilities_list) + "}"
+            if not geodude:
+                new_line = new_line + ",\t\\\n"
+            else:
+                new_line = new_line + "\n"
+                geodude = False
+                print("Geodude line!")
         else:
             # Keep the line unchanged
             new_line = line

@@ -9,4 +9,4 @@
   - Pool de movimientos (moves.h/move_names.h) 
   - Pool de habilidades (abilities.h(constants)(text)) (1-306)
   - Pool de TM (teachable_learnsets.h) 
-- Starter (starter_choose.c)
+- Starter (starter_choose.c) DONE
