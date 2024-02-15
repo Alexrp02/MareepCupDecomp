@@ -1,12 +1,22 @@
-- Objetos suelo (item_ball_scripts.inc)
-- Objetos tienda (Mart_Pokermart en scripts.inc)
+- [ ] TM's
+- [ ] Objetos suelo (item_ball_scripts.inc) (tener en cuenta fósiles)
+- [ ] Objetos tienda (Mart_Pokermart en scripts.inc)
+- [ ] Objetos NPC's
+- [ ] Fósiles
+- [ ] Pokémon estáticos
+- [ ] Trades (trade.h)
+    - Specie
+    - Ivs
+    - Item
+    - Requested
   - Item pool (items.h) ( 1-805 menos 690-757, 772)
-- Encounters (wild_encounters.json) DONE **wild_encounters_randomize.py**
-- Trainers (trainer_parties.h) DONE **trainer_teams_randomize.py**
+- [X] Encounters (wild_encounters.json) DONE **wild_encounters_randomize.py**
+- [X] Trainers (trainer_parties.h) DONE **trainer_teams_randomize.py**
   - Poke pool (genx.h) (1-1522 menos 1425-1488) 
   - Inicial del rival persistente
-- Movimientos/habilidad/TM's pokes (src/data/pokemon/level_up_learnsets.h) **level_up_learnsets_randomize.py** DONE / (src/data/pokemon/species_info/*) **abilities_randomize.py** (src/data/pokemon/teachable_learnsets.h)
+  - Totalmente evolucionados a partir del 49
+- [X] Movimientos/habilidad/TM's pokes (src/data/pokemon/level_up_learnsets.h) **level_up_learnsets_randomize.py** DONE / (src/data/pokemon/species_info/*) **abilities_randomize.py** (src/data/pokemon/teachable_learnsets.h) **teachable_learnsets_randomize.py**
   - Pool de movimientos (moves.h/move_names.h) 
   - Pool de habilidades (abilities.h(constants)(text)) (1-306)
   - Pool de TM (teachable_learnsets.h) 
-- Starter (starter_choose.c) DONE
+- [X] Starter (starter_choose.c) DONE
