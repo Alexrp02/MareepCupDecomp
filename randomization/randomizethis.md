@@ -1,9 +1,9 @@
-- [ ] TM's
+- [ ] TM's que te dan
 - [ ] Objetos suelo (item_ball_scripts.inc) (tener en cuenta fósiles)
 - [ ] Objetos tienda (Mart_Pokermart en scripts.inc)
-- [ ] Objetos NPC's
-- [ ] Fósiles
-- [ ] Pokémon estáticos
+- [ ] Objetos que dan NPC's
+- [ ] Fósiles (pokemon al revivirlos)
+- [ ] Encuentros con Pokémon estáticos
 - [ ] Trades (trade.h)
     - Specie
     - Ivs
