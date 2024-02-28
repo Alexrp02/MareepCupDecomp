@@ -1,11 +1,13 @@
-# Open gen 1 file
-with open('../src/data/pokemon/species_info/gen_4.h') as f:
-    lines = f.readlines()
+lines = []
+for i in range(1, 10):
+    with open(f'../src/data/pokemon/species_info/gen_{i}.h') as f:
+        lines += f.readlines()
 
 possible_poke = ""
 previous_had_evolution = False
 poke_have_evolution = False
 evolutions = 1
+poke_with_3_evolutions = []
 
 for line in lines:
     if (line.startswith('    [SPECIES_') and not previous_had_evolution):
@@ -22,4 +24,9 @@ for line in lines:
         previous_had_evolution = True
     elif line.startswith('    }') and not poke_have_evolution:
         previous_had_evolution = False
-        print(possible_poke + " " + str(evolutions) + " evolutions")
+        if evolutions == 3:
+            poke_with_3_evolutions.append(possible_poke)
+
+# Save the list of pokemon with 3 evolutions
+with open('data/poke_with_3_evolutions.txt', 'w') as f:
+    f.write('\n'.join(poke_with_3_evolutions))
