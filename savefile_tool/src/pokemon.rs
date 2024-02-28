@@ -176,7 +176,7 @@ impl Readers for Pokemon {
             .expect("Buffer overflow when reading pokemon personality");
 
         let personality = LittleEndian::read_u32(&buffer);
-        return personality;
+        personality
     }
 
     fn read_ot_id(pokemon_offset: u16, file: &mut File) -> u32 {
@@ -188,19 +188,19 @@ impl Readers for Pokemon {
             .expect("Buffer overflow when reading pokemon ot id");
 
         let ot_id = LittleEndian::read_u32(&buffer);
-        return ot_id;
+        ot_id
     }
 
     fn read_species(data: &Vec<u8>) -> u16 {
         let species =
             LittleEndian::read_u16(&data[(SPECIE_OFFSET) as usize..(SPECIE_OFFSET) as usize + 2]);
         println!("Species: {}", species);
-        return species;
+        species
     }
 
     fn calculate_format(personality: u32) -> u16 {
         let format = personality % 24;
-        return format as u16;
+        format as u16
     }
 
     fn read_all_data(&mut self) {
@@ -262,7 +262,7 @@ impl Readers for Pokemon {
 impl Decryption for Pokemon {
     fn calculate_decryption_key(personality: u32, ot_id: u32) -> u32 {
         let key = personality ^ ot_id;
-        return key;
+        key
     }
 
     fn get_encrypted_data(file: &mut File, pokemon_offset: u16) -> [u8; DATA_SIZE as usize] {
@@ -273,7 +273,7 @@ impl Decryption for Pokemon {
         file.read_exact(&mut encrypted_data)
             .expect("Buffer overflow when reading pokemon encrypted data");
 
-        return encrypted_data;
+        encrypted_data
     }
 
     fn decrypt_data(data: &[u8], decryption_key: u32) -> Vec<u8> {
