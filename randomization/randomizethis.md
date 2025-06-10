@@ -20,3 +20,4 @@
   - Pool de habilidades (abilities.h(constants)(text)) (1-306)
   - Pool de TM (teachable_learnsets.h) 
 - [X] Starter (starter_choose.c) DONE
+  - [ ] Pokemon con solo 3 evoluciones
